@@ -6,7 +6,7 @@ module.exports = {
         'password': '',
         'database': 'social_network'
     },
-	
+	'database': 'social_network',
     'users_table': 'users',
     'posts_table': 'posts',
     'friend_req_table' : 'freind_reqs',

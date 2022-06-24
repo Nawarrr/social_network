@@ -3,7 +3,25 @@ var dbconfig = require('../config/database');
 var connection = mysql.createConnection(dbconfig.connection);
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const path = require('path');
+const multer = require("multer");
+const storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+      callback(null, "images");
+    },
+    filename: function (req, file, callback) {
+      callback(null, req.params.id+".png");
+    },
+  });
 
+let upload = multer({ storage: storage, fileFilter: (req, file, cb) => {
+    if (file.mimetype == "image/png") {
+      cb(null, true);
+    } else {
+      cb(null, false);
+      return cb(new Error('Only .png format allowed!'));
+    }
+  }}).single("image");
 
 exports.register = async (req, res) => {
     console.log(req.body)
@@ -74,3 +92,29 @@ exports.login = async (req, res) => {
         }
 
     )}
+
+exports.edit = async (req, res) => {
+    console.log(req)
+    //upload.single("image")
+    upload(req, res, function(err) {
+        if (req.fileValidationError) {
+            return res.send(req.fileValidationError);
+        }
+        else if (!req.file) {
+            return res.render("edit",{
+                edit_post_url:"/auth/edit/"+req.params.id,
+                message:"Please Select an image in PNG format to upload"
+            })
+        }
+        else if (err instanceof multer.MulterError) {
+            
+            return res.send(err);
+        }
+        //connection.query("UPDATE users SET  =?, WHERE id=?",[,results[0].id])
+        // Display uploaded image for user validation
+        res.render("edit",{
+            edit_post_url:"/auth/edit/"+req.params.id,
+            message:"Data Updated Successfully"
+        })
+    });
+}

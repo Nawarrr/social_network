@@ -2,10 +2,13 @@ const express = require('express');
 var mysql= require('mysql');
 const path = require('path');
 var cookieParser = require('cookie-parser');
+var bodyParser =	require("body-parser");
 // initializing express
 const app = express();
 
 app.use(cookieParser());
+
+
 // db configuration for connection
 var dbconfig = require('./config/database');
 var db = mysql.createConnection(dbconfig.connection);
