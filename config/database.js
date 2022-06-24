@@ -9,5 +9,6 @@ module.exports = {
 	
     'users_table': 'users',
     'posts_table': 'posts',
-    'friend_req-table' : 'freind-reqs'
+    'friend_req_table' : 'freind_reqs',
+    'freinds' : 'freinds'
 };
