@@ -19,3 +19,4 @@ router.post('/post/:id' , postController.post)
 
 
 module.exports =router;
+    

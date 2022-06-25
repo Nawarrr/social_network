@@ -12,30 +12,42 @@
 </head>
 
 <body>
+    
     <nav>
+        <img src={{image}} width="60px"/>
         <h4>Social Network</h4>
+
         <ul>
+            
+        <form action ="/search/">
+        <label for="query"></label>
+        <input type="text" id="query" name="query" placeholder="TYPE HERE!">
+        <input type="submit" value="Search!">
+        </form>
+            <li><a href="/logout">Logout</a></li>
             <li><a href="/">Home</a></li>
-            <li><a href="/#" onclick="friendReq();">Send Request</a></li>
+
             <li></li>
         </ul>
 
 
     </nav>
 
-    <div class="container mt-4">
-        {{#each posts}}
-        <div class="jumbotron">
-            <p class="lead">{{this.body}}</p>
-            <hr class="my-4">
-            <p class="lead">{{this.published_on}}</p>
-            
-       
-        </div>
+    {{#each result}}
 
-        {{/each}}
-        
-    </div>
+    <div class="container mt-4">
+        <div class="jumbotron">
+            <h1 class="display-4">{{this.firstName}} <img src="http://localhost:8000/images/{{this.picPath}}" width="60px"/></h1>
+            <hr class="my-4">
+            <a class="btn btn-primary btn-lg" href="/users/{{this.id}}" role="button">Visit Profile</a>
+        </div>
+    {{/each}}
+
+
+            {{#if message}}
+            <h4 class="alert alert-danger mt-4">{{message}}</h4>
+   
+        {{/if}}
 
     </div>
 

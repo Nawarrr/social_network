@@ -12,8 +12,9 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.users_table + '` ( \
     `lastName` VARCHAR(20) NOT NULL, \
     `email` VARCHAR(50) NOT NULL, \
     `password` VARCHAR(1024) NOT NULL, \
-    `pic_path` VARCHAR(1024) NOT NULL DEFAULT "../images/default.png", \
+    `picPath` VARCHAR(1024) NOT NULL DEFAULT "default.png", \
     `_token` TEXT , \
+    `reqNum` INT DEFAULT 0 , \
         PRIMARY KEY (`id`), \
     UNIQUE INDEX `id_UNIQUE` (`id` ASC) \
 )');

@@ -1,9 +1,7 @@
 var mysql = require('mysql');
 var dbconfig = require('../config/database');
 var connection = mysql.createConnection(dbconfig.connection);
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const path = require('path');
 const multer = require("multer");
 const { query } = require('express');
 const storage = multer.diskStorage({
@@ -15,17 +13,17 @@ const storage = multer.diskStorage({
     },
   });
 
-let upload = multer({ storage: storage, fileFilter: (req, file, cb) => {
-    if (file.mimetype == "image/png") {
+let upload = multer({ storage: storage
+    , fileFilter: (req, file, cb) => {
+    if (file.mimetype == "image/png" || file.mimetype == "text") {
       cb(null, true);
     } else {
       cb(null, false);
       return cb(new Error('Only .png format allowed!'));
     }
-  }}).single("image");
+  }}).any();
 
 exports.register = async (req, res) => {
-    console.log(req.body)
 
 
     const { first_name, last_name, email, password } = req.body
@@ -61,7 +59,6 @@ exports.register = async (req, res) => {
 }
 
 exports.login = async (req, res) => {
-    console.log(req.body)
 
     
     const { email, password } = req.body
@@ -95,29 +92,50 @@ exports.login = async (req, res) => {
     )}
 
 exports.edit = async (req, res) => {
-    console.log(req)
-    //upload.single("image")
+   
+
+    var cock = req.cookies["_token"]
     upload(req, res, function(err) {
+        var {first_name, last_name} = req.body
         if (req.fileValidationError) {
             return res.send(req.fileValidationError);
         }
-        else if (!req.file) {
-            return res.render("edit",{
-                edit_post_url:"/auth/edit/"+req.params.id,
-                message:"Please Select an image in PNG format to upload"
+        else if (!req.files) {
+            connection.query(
+                'SELECT * FROM users WHERE _token=?', [cock], async (error, results) => {
+                    if (error) {
+                        console.log(error)
+                    }
+                    first_name = (first_name) ? first_name:results[0].firstName 
+                    last_name = (last_name) ? last_name:results[0].lastName
+                    connection.query("UPDATE users SET firstName =?,lastName=? WHERE id=?",[first_name,last_name,results[0].id])
+                    res.render("edit",{
+                        edit_post_url:"/auth/edit/"+req.params.id,
+                        image:"http://localhost:8000/images/"+results[0].picPath,
+                        message:"Data Updated Successfully"})    
+                })
+                     
+                return 
+        }
+
+        connection.query(
+            'SELECT * FROM users WHERE _token=?', [cock], async (error, results) => {
+                if (error) {
+                    console.log(error)
+                }
+                first_name = (first_name) ? first_name:results[0].firstName 
+                last_name = (last_name) ? last_name:results[0].lastName
+                connection.query("UPDATE users SET firstName =?,lastName=?,picPath=? WHERE id=?",[first_name,last_name,"../images/"+results[0].id+".png",results[0].id])
+                res.render("edit",{
+                    edit_post_url:"/auth/edit/"+req.params.id,
+                    image:"http://localhost:8000/images/"+results[0].picPath,
+                    message:"Data Updated Successfully"    
             })
-        }
-        else if (err instanceof multer.MulterError) {
-            
-            return res.send(err);
-        }
-        //connection.query("UPDATE users SET  =?, WHERE id=?",[,results[0].id])
-        // Display uploaded image for user validation
-        res.render("edit",{
-            edit_post_url:"/auth/edit/"+req.params.id,
-            message:"Data Updated Successfully"
+                 
         })
-    });
-}
+
+        return
+    }
+)}
 
 
