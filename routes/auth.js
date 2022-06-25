@@ -14,3 +14,4 @@ router.post('/login' ,authController.login)
 router.post('/edit/:id' , authController.edit)
 
 module.exports =router;
+    

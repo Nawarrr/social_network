@@ -7,7 +7,8 @@ var bodyParser =	require("body-parser");
 const app = express();
 
 app.use(cookieParser());
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // db configuration for connection
 var dbconfig = require('./config/database');
@@ -24,7 +25,11 @@ db.connect((err)=> {
 
 // static files 
 const publicDirectory = path.join(__dirname , './public');
+const imagesDirectory = path.join(__dirname , './images');
 app.use(express.static(publicDirectory));
+app.use('/images', express.static(imagesDirectory))
+
+
 // Parse Form Data
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());

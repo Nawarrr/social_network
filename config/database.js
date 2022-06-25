@@ -10,5 +10,5 @@ module.exports = {
     'users_table': 'users',
     'posts_table': 'posts',
     'friend_req_table' : 'freind_reqs',
-    'freinds' : 'freinds'
+    'freinds_table' : 'freinds'
 };

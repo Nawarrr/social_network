@@ -12,11 +12,21 @@
 </head>
 
 <body>
+    
     <nav>
+        <img src={{image}} width="60px"/>
         <h4>Social Network</h4>
+
         <ul>
+            
+        <form action ="/search/">
+        <label for="query"></label>
+        <input type="text" id="query" name="query" placeholder="TYPE HERE!">
+        <input type="submit" value="Search!">
+        </form>
             <li><a href="/logout">Logout</a></li>
             <li><a href={{edit_url}}>Edit Data</a></li>
+
             <li></li>
         </ul>
 
