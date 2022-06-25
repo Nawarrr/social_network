@@ -3,6 +3,7 @@ var dbconfig = require('../config/database');
 var connection = mysql.createConnection(dbconfig.connection);
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
+const { query } = require('express');
 const storage = multer.diskStorage({
     destination: function (req, file, callback) {
       callback(null, "images");
@@ -132,7 +133,9 @@ exports.edit = async (req, res) => {
             })
                  
         })
+
         return
     }
 )}
+
 

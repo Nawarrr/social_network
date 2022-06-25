@@ -32,27 +32,32 @@
 
 
     </nav>
+    <div> 
+      <form action = {{post_url}} method = "POST">
+         Enter Your Post Here
+         <br>
+         
+         <textarea rows = "5" cols = "60" name = "text">
+            Enter details here
+         </textarea><br>
+         <input type = "submit" value = "submit" />
+    </div>
 
     <div class="container mt-4">
+        {{#each posts}}
         <div class="jumbotron">
-            <h1 class="display-4">Login</h1>
-            <p class="lead">Social Network App</p>
+   
+            <p class="lead">{{this.body}}</p>
             <hr class="my-4">
-            <p>paraga</p>
-            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-        </div>
-        <div class="jumbotron">
-            <h1 class="display-4">Login</h1>
-            <p class="lead">Social Network App</p>
-            <hr class="my-4">
-            <p>paraga</p>
-            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+            
+            <p class="lead">{{this.published_on}}</p>
+       
         </div>
 
-        {{#if message}}
-            <h4 class="alert alert-danger mt-4">{{message}}</h4>
-   
-        {{/if}}
+        {{/each}}
+        
+
+
 
     </div>
 

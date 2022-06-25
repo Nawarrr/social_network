@@ -1,6 +1,7 @@
 const express = require('express');
 var mysql = require('mysql');
 var dbconfig = require('../config/database');
+const { post } = require('./auth');
 const router =  express.Router();
 var connection = mysql.createConnection(dbconfig.connection);
 
@@ -42,21 +43,39 @@ router.get('/logout' , (req,res)=> {
 //Profile HomePage
 router.get('/users/:id', function(req, res) {
     var cock = req.cookies["_token"]
+    var first_res
     connection.query(
         'SELECT * FROM users WHERE id=?', [req.params.id], async (error, results) => {
             if (error) {
                 console.log(error)
-            }            
-            if ( ! results || results.length == 0) {
-                res.render('profile_home');
+                return
             }
-            else if (results[0]._token == cock) {
-                res.render('profile_home_owner',{id:req.params.id,image:"http://localhost:8000/images/"+results[0].picPath,friReq:results[0].reqNum})
-            }
+
+            first_res = results})
+            connection.query('SELECT * FROM posts WHERE user_id=?' , [req.params.id], (error, results) =>{
+                if (error){
+                    console.log(error);
+                    return;
+                }
+            var posts_obj = results
+                
+
+                        
+            
+            if ( ! first_res || first_res.length == 0) {
+                res.render('profile_home' ,  {posts : posts_obj})
+            } else if (first_res[0]._token == cock) {
+                res.render('profile_home_owner',{id:req.params.id,image:"http://localhost:8000/images/"+results[0].picPath,friReq:results[0].reqNum,
+                                               post_url : "/users"+"/post/" +req.params.id , posts : posts_obj })
+
             else{
-                res.render('profile_home')
+                res.render('profile_home', {posts : posts_obj})
             }
+
+        
+
         })
+        
   });
 
 // Requests Page #TODO
@@ -102,6 +121,7 @@ router.get('/users/:id/edit', function(req, res) {
         })
   });
 
+
 //Search Page
 router.get('/search', function(req, res) {
     var cock = req.cookies["_token"]
@@ -121,5 +141,6 @@ router.get('/search', function(req, res) {
                 })  
         })
   });
+
 
 module.exports =router;

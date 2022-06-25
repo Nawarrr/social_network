@@ -17,7 +17,7 @@ var db = mysql.createConnection(dbconfig.connection);
 // DB connection
 db.connect((err)=> {
     if(err){
-        console.log(error)
+        console.log(err)
     }else {
         console.log("MySQL connected...")
     }
@@ -48,3 +48,4 @@ app.listen('8000', () => {
 
 app.use('/',require('./routes/pages'));
 app.use('/auth',require('./routes/auth'));
+app.use('/users' , require('./routes/users'))
