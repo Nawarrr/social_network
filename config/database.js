@@ -1,10 +1,15 @@
 // config/database.js
 module.exports = {
+    'connection_create': {
+        'host': 'localhost',
+        'user': 'USER',
+        'password': 'PASS',
+    },
     'connection': {
         'host': 'localhost',
-        'user': 'root',
-        'password': '',
-        'database': 'social_network'
+        'user': 'USER',
+        'password': 'PASS',
+        'database': 'social_network',
     },
 	'database': 'social_network',
     'users_table': 'users',

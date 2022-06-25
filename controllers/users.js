@@ -10,8 +10,11 @@ exports.post = (req, res) => {
     connection.query('SELECT id from users WHERE `_token` = ?' , [cock], (error,results) => {
         if (error){
             console.log(error)
-        }else {
-
+        }else  if ( ! results || results.length == 0) {
+            res.redirect("/");
+        }
+        else {
+           
             const date = new Date()
             connection.query('INSERT INTO posts SET ?', { user_id : results[0].id, body : req.body.text , published_on :date })
             res.redirect('back');

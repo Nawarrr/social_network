@@ -83,7 +83,7 @@ exports.login = async (req, res) => {
                 var randomNumber=Math.random().toString();
                 randomNumber=randomNumber.substring(2,randomNumber.length);
                 connection.query("UPDATE users SET _token =? WHERE id=?",[randomNumber,results[0].id])
-                res.cookie("_token" ,randomNumber, { maxAge: 900000, httpOnly: true })
+                res.cookie("_token" ,randomNumber, { maxAge: 900000000, httpOnly: true })
                 res.redirect('/users/' + results[0].id)
             }
             

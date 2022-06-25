@@ -36,7 +36,7 @@ router.get('/login' , (req,res)=> {
 //Logout 
 router.get('/logout' , (req,res)=> {
     var cock = req.cookies["_token"]
-    connection.query("UPDATE users SET _token =? WHERE _token=?",[null,cock])
+    connection.query("UPDATE users SET _token =? WHERE _token=?",["",cock])
     res.redirect('/')
 })
 
@@ -55,7 +55,7 @@ router.get('/friends' , (req,res)=> {
             }
             first_res = results
             connection.query(
-                'SELECT * FROM users u,friends fr where u.id=fr.friend_id and not u.id=?',[first_res[0].id], async (error, results) => {
+                'SELECT * FROM users u,friends fr where u.id=fr.friend_id and fr.user_id=?',[first_res[0].id], async (error, results) => {
                     if (error) {
                         console.log(error)
                         res.redirect('/');
@@ -78,42 +78,57 @@ router.get('/users/:id', function(req, res) {
                 console.log(error)
                 return
             }
-
-            first_res = results})
+            if ( ! results || results.length == 0) {
+                res.redirect("/")
+                return 
+            }
+            first_res = results
             connection.query('SELECT * FROM posts WHERE user_id=?' , [req.params.id], (error, results) =>{
                 if (error){
                     console.log(error);
                     return;
                 }
+                
             var posts_obj = results
-            if ( ! first_res || first_res.length == 0) {
-                res.redirect("/")
-            } else if (first_res[0]._token == cock) {
-                res.render('profile_home_owner',{name:first_res[0].firstName+", "+first_res[0].lastName,image:"http://localhost:8000/images/"+first_res[0].picPath,friReq:first_res[0].reqNum,
+            if (first_res[0]._token == cock) {  
+                res.render('profile_home_owner',{id:first_res[0].id,name:first_res[0].firstName+", "+first_res[0].lastName,image:"http://localhost:8000/images/"+first_res[0].picPath,friReq:first_res[0].reqNum,
                                                post_url : "/users"+"/post/" +req.params.id , posts : posts_obj })}
-            else{
-                var visiter_id
+                
+            else if(cock){
+                
                 connection.query(
                     'SELECT id FROM users WHERE _token=?', [cock], async (error, results) => {
                         if (error) {
                             console.log(error)
                             return
+                        }if ( ! results || results.length == 0){
+
+                            res.render('profile_home', {id:first_res[0].id,friends:0,name:first_res[0].firstName+", "+first_res[0].lastName,posts : posts_obj,image:"http://localhost:8000/images/"+first_res[0].picPath})
                         }
-            
-                        visiter_id = results})
+                        
+                        
+                        
                 connection.query(
-                    'SELECT * FROM friends where friend_id=? and user_id=?',[visiter_id,first_res[0].id], async (error, results) => {
+                    'SELECT * FROM friends where friend_id=? and user_id=?',[first_res[0].id,results[0].id], async (error, results) => {
                         if (error) {
                             console.log(error)
                             res.redirect('/');
                             return
-                        }            
-                        res.render('profile_home', {friends:results,name:first_res[0].firstName+", "+first_res[0].lastName,posts : posts_obj,image:"http://localhost:8000/images/"+first_res[0].picPath})
+                        }
+
+                        var friends
+                        if(results.length)friends=1
+                        else friends=0           
+                        res.render('profile_home', {id:first_res[0].id,friends:results,name:first_res[0].firstName+", "+first_res[0].lastName,posts : posts_obj,image:"http://localhost:8000/images/"+first_res[0].picPath})
             
                     })
+                })
+                }else{
+                    res.render('profile_home', {id:first_res[0].id,friends:0,name:first_res[0].firstName+", "+first_res[0].lastName,posts : posts_obj,image:"http://localhost:8000/images/"+first_res[0].picPath})
+
                 }
         })
-        
+    })
   });
 
 // Requests Page
