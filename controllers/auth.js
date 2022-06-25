@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const path = require('path');
 const multer = require("multer");
+const { query } = require('express');
 const storage = multer.diskStorage({
     destination: function (req, file, callback) {
       callback(null, "images");
@@ -118,3 +119,5 @@ exports.edit = async (req, res) => {
         })
     });
 }
+
+

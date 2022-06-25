@@ -3,7 +3,7 @@ module.exports = {
     'connection': {
         'host': 'localhost',
         'user': 'root',
-        'password': '',
+        'password': '123456',
         'database': 'social_network'
     },
 	'database': 'social_network',
@@ -11,4 +11,4 @@ module.exports = {
     'posts_table': 'posts',
     'friend_req_table' : 'freind_reqs',
     'freinds' : 'freinds'
-};
+};  
