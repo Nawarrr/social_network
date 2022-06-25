@@ -8,7 +8,7 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.posts_table + '` ( \
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT, \
     `user_id` INT UNSIGNED NOT NULL, \
     `body` MEDIUMTEXT NOT NULL,\
-    `published_on` DATE NOT NULL, \
+    `published_on` DATETIME NOT NULL, \
         PRIMARY KEY (`id`), \
         FOREIGN KEY (`user_id`) REFERENCES users(`id`), \
     UNIQUE INDEX `id_UNIQUE` (`id` ASC) \

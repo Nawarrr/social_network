@@ -16,7 +16,7 @@
         <h4>Social Network</h4>
         <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/">Send Request</a></li>
+            <li><a href="/#" onclick="friendReq();">Send Request</a></li>
             <li></li>
         </ul>
 
@@ -32,12 +32,11 @@
             <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
         </div>
 
----
-            {{#if message}}
+        {{#if message}}
             <h4 class="alert alert-danger mt-4">{{message}}</h4>
    
         {{/if}}
----
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"

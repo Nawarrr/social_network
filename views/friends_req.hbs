@@ -19,37 +19,32 @@
 
         <ul>
             
-            <form action ="/search/">
-            <label for="query"></label>
-            <input type="text" id="query" name="query" placeholder="TYPE HERE!">
-            <input type="submit" value="Search!">
-            </form>
+        <form action ="/search/">
+        <label for="query"></label>
+        <input type="text" id="query" name="query" placeholder="TYPE HERE!">
+        <input type="submit" value="Search!">
+        </form>
             <li><a href="/logout">Logout</a></li>
-            <li><a href="/users/{{id}}/edit">Edit Data</a></li>
-            <li><a href="/req/{{id}}">{{friReq}}</a></li>
+            <li><a href="/">Home</a></li>
+
             <li></li>
         </ul>
 
 
     </nav>
 
+    {{#each result}}
+
     <div class="container mt-4">
         <div class="jumbotron">
-            <h1 class="display-4">Login</h1>
-            <p class="lead">Social Network App</p>
+            <h1 class="display-4">{{this.firstName}} <img src="http://localhost:8000/images/{{this.picPath}}" width="60px"/></h1>
             <hr class="my-4">
-            <p>paraga</p>
-            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+            <a class="btn btn-primary btn-lg" href="/users/{{this.id}}" role="button">Visit Profile</a>
         </div>
-        <div class="jumbotron">
-            <h1 class="display-4">Login</h1>
-            <p class="lead">Social Network App</p>
-            <hr class="my-4">
-            <p>paraga</p>
-            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-        </div>
+    {{/each}}
 
-        {{#if message}}
+
+            {{#if message}}
             <h4 class="alert alert-danger mt-4">{{message}}</h4>
    
         {{/if}}

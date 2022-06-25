@@ -51,13 +51,39 @@ router.get('/users/:id', function(req, res) {
                 res.render('profile_home');
             }
             else if (results[0]._token == cock) {
-                res.render('profile_home_owner',{edit_url:"/users/"+req.params.id+"/edit",image:"http://localhost:8000/images/"+results[0].picPath})
+                res.render('profile_home_owner',{id:req.params.id,image:"http://localhost:8000/images/"+results[0].picPath,friReq:results[0].reqNum})
             }
             else{
                 res.render('profile_home')
             }
         })
   });
+
+// Requests Page #TODO
+router.get('/req/:id', function(req, res) {
+    var cock = req.cookies["_token"]
+    var first_res 
+    connection.query(
+        'SELECT * FROM users WHERE id=?', [req.params.id], async (error, results) => {
+            if (error) {
+                console.log(error)
+            }            
+            if ( ! results || results.length == 0) {
+                res.render('/');
+                return
+            }
+            else if (results[0]._token == cock) {
+                first_res = results
+            }
+            else{
+                res.render('/')
+                return
+            }
+        })
+    connection.query(
+        'SELECT * FROM users WHERE id=?'
+    )
+});
 
 //Profile EditPage
 router.get('/users/:id/edit', function(req, res) {
@@ -68,7 +94,7 @@ router.get('/users/:id/edit', function(req, res) {
                 res.redirect('/users/'+req.params.id)
             }
             else if (results[0]._token == cock) {
-                res.render('edit',{edit_post_url:"/auth/edit/"+req.params.id,image:"http://localhost:8000/images/"+results[0].picPath})
+                res.render('edit',{edit_post_url:"/auth/edit/"+req.params.id,image:"http://localhost:8000/images/"+results[0].picPath,friReq:results[0].reqNum})
             }
             else{
                 res.redirect('/users/'+req.params.id)
@@ -76,7 +102,7 @@ router.get('/users/:id/edit', function(req, res) {
         })
   });
 
-//Profile EditPage
+//Search Page
 router.get('/search', function(req, res) {
     var cock = req.cookies["_token"]
     var sr = req.query.query
@@ -90,7 +116,7 @@ router.get('/search', function(req, res) {
                         res.redirect("/")
                     }
                     else{
-                        res.render("search_logged_in",{edit_post_url:"/auth/edit/"+req.params.id,image:"http://localhost:8000/images/"+results[0].picPath,result:search_res})
+                        res.render("search_logged_in",{edit_post_url:"/auth/edit/"+req.params.id,image:"http://localhost:8000/images/"+results[0].picPath,result:search_res,id:req.params.id})
                     }
                 })  
         })
