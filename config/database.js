@@ -3,12 +3,12 @@ module.exports = {
     'connection': {
         'host': 'localhost',
         'user': 'root',
-        'password': '123456',
+        'password': '',
         'database': 'social_network'
     },
 	'database': 'social_network',
     'users_table': 'users',
     'posts_table': 'posts',
-    'friend_req_table' : 'freind_reqs',
-    'freinds_table' : 'freinds'
+    'friend_req_table' : 'friend_reqs',
+    'friends_table' : 'friends'
 };

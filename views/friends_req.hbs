@@ -14,8 +14,8 @@
 <body>
     
     <nav>
-        <img src={{image}} width="60px"/>
-        <h4>Social Network</h4>
+        <img src="http://localhost:8000/images/{{image}}" width="60px"/>
+        <h4>{{name}}</h4>
 
         <ul>
             
@@ -34,12 +34,13 @@
     </nav>
 
     {{#each result}}
-
     <div class="container mt-4">
         <div class="jumbotron">
             <h1 class="display-4">{{this.firstName}} <img src="http://localhost:8000/images/{{this.picPath}}" width="60px"/></h1>
             <hr class="my-4">
-            <a class="btn btn-primary btn-lg" href="/users/{{this.id}}" role="button">Visit Profile</a>
+            <form action ="/accept/{{this.sender_id}}">
+            <label for="req"></label>
+            <input type="submit" value="Accept Request">
         </div>
     {{/each}}
 

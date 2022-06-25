@@ -13,10 +13,19 @@
 
 <body>
     <nav>
-        <h4>Social Network</h4>
+        <img src={{image}} width="60px"/>
+        <h4>{{name}}</h4>
         <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/#" onclick="friendReq();">Send Request</a></li>
+            {{#if friends}}
+                <li><a href="/">Home</a></li>
+            {{else}}
+                <form action ="/send/{{id}}">
+                <label for="req"></label>
+                <input type="submit" value="Send Request">
+                </form>
+                <li><a href="/">Home</a></li>
+            {{/if}}
+            
             <li></li>
         </ul>
 

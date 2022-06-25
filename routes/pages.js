@@ -40,6 +40,34 @@ router.get('/logout' , (req,res)=> {
     res.redirect('/')
 })
 
+// Friends Page
+router.get('/friends' , (req,res)=> {
+    var cock = req.cookies["_token"]
+    var first_res
+    connection.query(
+        'SELECT * FROM users WHERE _token=?', [cock], async (error, results) => {
+            if (error) {
+                console.log(error)
+            }            
+            if ( ! results || results.length == 0) {
+                res.redirect('/');
+                return
+            }
+            first_res = results
+            connection.query(
+                'SELECT * FROM users u,friends fr where u.id=fr.friend_id and not u.id=?',[first_res[0].id], async (error, results) => {
+                    if (error) {
+                        console.log(error)
+                        res.redirect('/');
+                        return
+                    }            
+                    
+                    res.render("friends",{name:first_res[0].firstName+", "+first_res[0].lastName,result : results,image:first_res[0].picPath})
+                })
+        })
+})
+
+
 //Profile HomePage
 router.get('/users/:id', function(req, res) {
     var cock = req.cookies["_token"]
@@ -58,27 +86,37 @@ router.get('/users/:id', function(req, res) {
                     return;
                 }
             var posts_obj = results
-                
-
-                        
-            
             if ( ! first_res || first_res.length == 0) {
-                res.render('profile_home' ,  {posts : posts_obj})
+                res.redirect("/")
             } else if (first_res[0]._token == cock) {
-                res.render('profile_home_owner',{id:req.params.id,image:"http://localhost:8000/images/"+results[0].picPath,friReq:results[0].reqNum,
-                                               post_url : "/users"+"/post/" +req.params.id , posts : posts_obj })
-
+                res.render('profile_home_owner',{name:first_res[0].firstName+", "+first_res[0].lastName,image:"http://localhost:8000/images/"+first_res[0].picPath,friReq:first_res[0].reqNum,
+                                               post_url : "/users"+"/post/" +req.params.id , posts : posts_obj })}
             else{
-                res.render('profile_home', {posts : posts_obj})
-            }
-
-        
-
+                var visiter_id
+                connection.query(
+                    'SELECT id FROM users WHERE _token=?', [cock], async (error, results) => {
+                        if (error) {
+                            console.log(error)
+                            return
+                        }
+            
+                        visiter_id = results})
+                connection.query(
+                    'SELECT * FROM friends where friend_id=? and user_id=?',[visiter_id,first_res[0].id], async (error, results) => {
+                        if (error) {
+                            console.log(error)
+                            res.redirect('/');
+                            return
+                        }            
+                        res.render('profile_home', {friends:results,name:first_res[0].firstName+", "+first_res[0].lastName,posts : posts_obj,image:"http://localhost:8000/images/"+first_res[0].picPath})
+            
+                    })
+                }
         })
         
   });
 
-// Requests Page #TODO
+// Requests Page
 router.get('/req/:id', function(req, res) {
     var cock = req.cookies["_token"]
     var first_res 
@@ -88,20 +126,67 @@ router.get('/req/:id', function(req, res) {
                 console.log(error)
             }            
             if ( ! results || results.length == 0) {
-                res.render('/');
+                res.redirect('/');
                 return
             }
             else if (results[0]._token == cock) {
                 first_res = results
+                connection.query(
+                    'SELECT * FROM users u,friend_reqs fr where u.id=sender_id and fr.id='+first_res[0].id, async (error, results) => {
+                        if (error) {
+                            console.log(error)
+                            return
+                        } 
+                        
+                        res.render("friends_req",{name:first_res[0].firstName+", "+first_res[0].lastName,result : results,image:first_res[0].picPath})
+                        })
             }
             else{
-                res.render('/')
+                res.redirect('/')
                 return
             }
         })
+});
+
+// accept friend request
+router.get('/accept/:id', function(req, res) {
+    var cock = req.cookies["_token"]
     connection.query(
-        'SELECT * FROM users WHERE id=?'
-    )
+        'SELECT * FROM users WHERE _token=?', [cock], async (error, results) => {
+            if (error) {
+                console.log(error)
+            }            
+            if ( ! results || results.length == 0) {
+                res.redirect('/');
+                return
+            }
+            connection.query("UPDATE users SET reqNum = reqNum - 1 WHERE id=?",[results[0].id])
+            connection.query("delete from friend_reqs where id=? and sender_id=?",[results[0].id,req.params.id])
+            connection.query("insert into friends (user_id,friend_id) values (?,?)",[req.params.id,results[0].id])
+            connection.query("insert into friends (user_id,friend_id) values (?,?)",[results[0].id,req.params.id,])
+            res.redirect("/req/"+results[0].id)        
+        })
+});
+
+
+// Send friend Req
+router.get('/send/:id', function(req, res) {
+    var cock = req.cookies["_token"]
+    connection.query(
+        'SELECT * FROM users WHERE _token=?', [cock], async (error, results) => {
+            if (error) {
+                console.log(error)
+            }            
+            if ( ! results || results.length == 0) {
+                res.redirect('/')
+                return
+            }
+            else if (results[0]._token == cock) {
+                connection.query("insert ignore into friend_reqs (id,sender_id) values (?,?)",[req.params.id,results[0].id])
+                connection.query("UPDATE users SET reqNum =reqNum + 1 WHERE id=?",[req.params.id])
+                res.redirect('/')
+        }
+    })
 });
 
 //Profile EditPage
@@ -113,7 +198,8 @@ router.get('/users/:id/edit', function(req, res) {
                 res.redirect('/users/'+req.params.id)
             }
             else if (results[0]._token == cock) {
-                res.render('edit',{edit_post_url:"/auth/edit/"+req.params.id,image:"http://localhost:8000/images/"+results[0].picPath,friReq:results[0].reqNum})
+                res.render('edit',{name:results[0].firstName+", "+results[0].lastName,edit_post_url:"/auth/edit/"+req.params.id,
+                                    image:"http://localhost:8000/images/"+results[0].picPath,friReq:results[0].reqNum,id:req.params.id})
             }
             else{
                 res.redirect('/users/'+req.params.id)
@@ -136,7 +222,7 @@ router.get('/search', function(req, res) {
                         res.redirect("/")
                     }
                     else{
-                        res.render("search_logged_in",{edit_post_url:"/auth/edit/"+req.params.id,image:"http://localhost:8000/images/"+results[0].picPath,result:search_res,id:req.params.id})
+                        res.render("search_logged_in",{name:results[0].firstName+", "+results[0].lastName,edit_post_url:"/auth/edit/"+req.params.id,image:"http://localhost:8000/images/"+results[0].picPath,result:search_res,id:req.params.id})
                     }
                 })  
         })

@@ -16,21 +16,21 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.posts_table + '` ( \
 
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.friend_req_table+ '` ( \
+    `id` INT UNSIGNED NOT NULL, \
     `sender_id` INT UNSIGNED NOT NULL, \
-    `receiver_id` INT UNSIGNED NOT NULL, \
         FOREIGN KEY (`sender_id`) REFERENCES users(`id`), \
-        FOREIGN KEY (`receiver_id`) REFERENCES users(`id`), \
-        PRIMARY KEY (`sender_id`,`receiver_id`) \
+        FOREIGN KEY (`id`) REFERENCES users(`id`), \
+        PRIMARY KEY (`id`,`sender_id`) \
 )');
 
 
 connection.query('\
-CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.freinds_table + '` ( \
+CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.friends_table + '` ( \
     `user_id` INT UNSIGNED NOT NULL, \
-    `freind_id` INT UNSIGNED NOT NULL, \
-        PRIMARY KEY (`user_id`,`freind_id`), \
+    `friend_id` INT UNSIGNED NOT NULL, \
+        PRIMARY KEY (`user_id`,`friend_id`), \
         FOREIGN KEY (`user_id`) REFERENCES users(`id`), \
-        FOREIGN KEY (`freind_id`) REFERENCES users(`id`) \
+        FOREIGN KEY (`friend_id`) REFERENCES users(`id`) \
 )');
 
 connection.end();

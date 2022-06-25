@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    
+    <nav>
+        <img src="http://localhost:8000/images/{{image}}" width="60px"/>
+        <h4>{{name}}</h4>
+
+        <ul>
+            
+        <form action ="/search/">
+        <label for="query"></label>
+        <input type="text" id="query" name="query" placeholder="TYPE HERE!">
+        <input type="submit" value="Search!">
+        </form>
+            <li><a href="/logout">Logout</a></li>
+            <li><a href="/">Home</a></li>
+
+            <li></li>
+        </ul>
+
+
+    </nav>
+
+    {{#each result}}
+    <div class="container mt-4">
+        <div class="jumbotron">
+            <h1 class="display-4">{{this.firstName}} <img src="http://localhost:8000/images/{{this.picPath}}" width="60px"/></h1>
+            <hr class="my-4">
+            <li><a href="/users/{{this.friend_id}}">Visit Profile</a></li>
+        </div>
+    {{/each}}
+
+
+            {{#if message}}
+            <h4 class="alert alert-danger mt-4">{{message}}</h4>
+   
+        {{/if}}
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

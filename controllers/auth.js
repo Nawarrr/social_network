@@ -125,7 +125,7 @@ exports.edit = async (req, res) => {
                 }
                 first_name = (first_name) ? first_name:results[0].firstName 
                 last_name = (last_name) ? last_name:results[0].lastName
-                connection.query("UPDATE users SET firstName =?,lastName=?,picPath=? WHERE id=?",[first_name,last_name,"../images/"+results[0].id+".png",results[0].id])
+                connection.query("UPDATE users SET firstName =?,lastName=?,picPath=? WHERE id=?",[first_name,last_name,results[0].id+".png",results[0].id])
                 res.render("edit",{
                     edit_post_url:"/auth/edit/"+req.params.id,
                     image:"http://localhost:8000/images/"+results[0].picPath,
